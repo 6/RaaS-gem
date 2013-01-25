@@ -13,6 +13,12 @@ module RaaS
   end
 
   def execute(method, options = {})
+    raise InvalidUrl  unless options[:url].present?
+    raise InvalidUrl  unless options[:url].starts_with?("http://")
+  end
+end
 
+module RaaS
+  class InvalidUrl < StandardError
   end
 end
