@@ -19,6 +19,9 @@ module RaaS
 end
 
 module RaaS
-  class InvalidUrl < StandardError
+  class RaaSError < StandardError
+  end
+
+  class InvalidUrl < RaaSError
   end
 end
