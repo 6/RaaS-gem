@@ -1,7 +1,12 @@
 require 'spec_helper'
 
 describe "RaaS" do
-  let(:options) { {url: "http://www.google.co.jp"} }
+  let(:options) do
+    {
+      url: "http://www.google.co.jp",
+      endpoint_url: "http://localhost:5002"
+    }
+  end
 
   describe ".get" do
     it "calls .execute with the :get method and given options" do
@@ -30,6 +35,12 @@ describe "RaaS" do
 
       it "raises a RaaS::InvalidEndpointUrl error if the endpoint is not present" do
         expect { RaaS.execute(:get, {url: "http://example.com"}) }.to raise_error(RaaS::InvalidEndpointUrl)
+      end
+    end
+
+    context "with valid options" do
+      it "does not raise an error" do
+        expect { RaaS.execute(:get, options) }.not_to raise_error
       end
     end
   end
