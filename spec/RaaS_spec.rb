@@ -27,6 +27,10 @@ describe "RaaS" do
       it "raises a RaaS::InvalidUrl error if the URL has an unsupported scheme" do
         expect { RaaS.execute(:get, {url: "ftp://example.com"}) }.to raise_error(RaaS::InvalidUrl)
       end
+
+      it "raises a RaaS::InvalidEndpointUrl error if the endpoint is not present" do
+        expect { RaaS.execute(:get, {url: "http://example.com"}) }.to raise_error(RaaS::InvalidEndpointUrl)
+      end
     end
   end
 end
