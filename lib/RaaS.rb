@@ -1,5 +1,7 @@
 require "active_support/all"
 require "andand"
+require "cgi"
+require "rest-client"
 
 module RaaS
   module_function
@@ -17,6 +19,12 @@ module RaaS
     raise InvalidUrl  unless options[:url].starts_with?("http://")
     raise InvalidEndpointUrl  unless options[:endpoint_url].present?
     raise InvalidHttpMethod  unless [:get, :post].include?(method)
+
+    options[:method] = :get # TODO use :post if headers
+    options[:url] = "#{options[:endpoint_url]}/#{method.to_s}?url=#{CGI.escape(options[:url])}"
+    options.delete(:endpoint_url)
+
+    RestClient::Request.execute(options)
   end
 end
 

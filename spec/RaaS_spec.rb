@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "RaaS" do
   let(:options) do
     {
-      url: "http://www.google.co.jp",
+      url: "http://www.google.co.jp/search?q=what",
       endpoint_url: "http://localhost:5002"
     }
   end
@@ -43,8 +43,20 @@ describe "RaaS" do
     end
 
     context "with valid options" do
+      def stub_request!
+        url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
+        stub_request(:get, url)
+      end
+
       it "does not raise an error" do
+        stub_request!
         expect { RaaS.execute(:get, options) }.not_to raise_error
+      end
+
+      it "sends the correct request to the RaaS endpoint URL" do
+        request = stub_request!
+        RaaS.execute(:get, options)
+        request.should have_been_requested
       end
     end
   end
