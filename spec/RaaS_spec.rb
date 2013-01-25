@@ -36,6 +36,10 @@ describe "RaaS" do
       it "raises a RaaS::InvalidEndpointUrl error if the endpoint is not present" do
         expect { RaaS.execute(:get, {url: "http://example.com"}) }.to raise_error(RaaS::InvalidEndpointUrl)
       end
+
+      it "raises a RaaS::InvalidHttpMethod error if the method is not :get or :post" do
+        expect { RaaS.execute(:head, options) }.to raise_error(RaaS::InvalidHttpMethod)
+      end
     end
 
     context "with valid options" do

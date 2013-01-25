@@ -16,6 +16,7 @@ module RaaS
     raise InvalidUrl  unless options[:url].present?
     raise InvalidUrl  unless options[:url].starts_with?("http://")
     raise InvalidEndpointUrl  unless options[:endpoint_url].present?
+    raise InvalidHttpMethod  unless [:get, :post].include?(method)
   end
 end
 
@@ -27,5 +28,8 @@ module RaaS
   end
 
   class InvalidEndpointUrl < RaaSError
+  end
+
+  class InvalidHttpMethod < RaaSError
   end
 end
