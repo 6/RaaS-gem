@@ -45,7 +45,7 @@ describe "RaaS" do
     context "with valid options" do
       def stub_request!
         url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
-        stub_request(:get, url)
+        stub_request(:post, url)
       end
 
       it "does not raise an error" do
