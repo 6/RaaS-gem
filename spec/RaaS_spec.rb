@@ -104,7 +104,7 @@ describe "RaaS" do
     end
 
     it "raises a RaaS::BadResponse" do
-      expect { RaaS.execute(:get, options) }.to raise_error(RaaS::BadResponse)
+      expect { RaaS.execute(:get, options) }.to raise_error(RaaS::BadRequest)
     end
 
     it "includes details in the exception" do
