@@ -43,8 +43,9 @@ describe "RaaS" do
     end
 
     context "with valid options" do
-      def stub_request!
+      def stub_request!(options = {})
         url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
+        url += "&force=#{options[:force]}"  if options[:force]
         stub_request(:post, url)
       end
 
@@ -62,6 +63,14 @@ describe "RaaS" do
       it "sends along headers if specified" do
         options[:headers] = {'User-Agent' => 'doubleo7'}
         request = stub_request!.with(:headers => {'User-Agent' => "doubleo7"})
+
+        RaaS.execute(:get, options)
+        request.should have_been_requested
+      end
+
+      it "sends along the force param if specified" do
+        options[:force] = "Shift_JIS"
+        request = stub_request!(force: "Shift_JIS")
 
         RaaS.execute(:get, options)
         request.should have_been_requested

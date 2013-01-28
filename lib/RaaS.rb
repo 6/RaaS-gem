@@ -22,7 +22,9 @@ module RaaS
 
     options[:method] = :post
     options[:url] = "#{options[:endpoint_url]}/#{method.to_s}?url=#{CGI.escape(options[:url])}"
+    options[:url] += "&force=#{options[:force]}"  if options[:force]
     options.delete(:endpoint_url)
+    options.delete(:force)
 
     RestClient::Request.execute(options)
   end
