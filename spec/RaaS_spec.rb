@@ -81,7 +81,7 @@ describe "RaaS" do
   context "if the response from RaaS is 200" do
     it "returns response JSON" do
       url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
-      example_response = JSON.parse(File.read('./spec/fixtures/response.json'))
+      example_response = File.read('./spec/fixtures/response.json')
       stub_request(:post, url).to_return(
         :headers => {'Content-Type' => 'application/json'},
         :body => example_response,
@@ -89,7 +89,7 @@ describe "RaaS" do
       )
 
       response = RaaS.execute(:get, options)
-      response['response']['body'].should == example_response['response']['body']
+      response['response']['body'].should == JSON.parse(example_response)['response']['body']
     end
   end
 

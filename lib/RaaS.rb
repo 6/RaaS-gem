@@ -30,7 +30,7 @@ module RaaS
       raise BadResponse.new(JSON.parse(response.body)['error'])  if response.code == 400
       raise InternalServerError  if response.code >= 500
       raise UnexpectedStatusCode  if response.code != 200
-      response
+      JSON.parse(response.body)
     end
   end
 end
