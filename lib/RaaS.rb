@@ -28,6 +28,7 @@ module RaaS
 
     RestClient::Request.execute(options) do |response, request, result, &block|
       raise BadResponse  if response.code == 400
+      raise InternalServerError  if response.code >= 500
       response
     end
   end
@@ -47,5 +48,8 @@ module RaaS
   end
 
   class BadResponse < RaaSError
+  end
+
+  class InternalServerError < RaaSError
   end
 end

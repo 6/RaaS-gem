@@ -103,4 +103,15 @@ describe "RaaS" do
       expect { RaaS.execute(:get, options) }.to raise_error(RaaS::BadResponse)
     end
   end
+
+  context "if the response from RaaS is 5XX" do
+    it "raises a RaaS::InternalServerError" do
+      url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
+      stub_request(:post, url).to_return(
+        :status => 500
+      )
+
+      expect { RaaS.execute(:get, options) }.to raise_error(RaaS::InternalServerError)
+    end
+  end
 end
