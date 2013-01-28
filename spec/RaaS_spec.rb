@@ -92,4 +92,15 @@ describe "RaaS" do
       response['response']['body'].should == example_response['response']['body']
     end
   end
+
+  context "if the response from RaaS is 400" do
+    it "raises a RaaS::BadResponse with details" do
+      url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
+      stub_request(:post, url).to_return(
+        :status => 400
+      )
+
+      expect { RaaS.execute(:get, options) }.to raise_error(RaaS::BadResponse)
+    end
+  end
 end

@@ -27,6 +27,7 @@ module RaaS
     options.delete(:force)
 
     RestClient::Request.execute(options) do |response, request, result, &block|
+      raise BadResponse  if response.code == 400
       response
     end
   end
@@ -43,5 +44,8 @@ module RaaS
   end
 
   class InvalidHttpMethod < RaaSError
+  end
+
+  class BadResponse < RaaSError
   end
 end
