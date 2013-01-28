@@ -16,7 +16,7 @@ module RaaS
 
   def execute(method, options = {})
     raise InvalidUrl  unless options[:url].present?
-    raise InvalidUrl  unless options[:url].starts_with?("http://")
+    raise InvalidUrl  unless options[:url].starts_with?("http://", "https://")
     raise InvalidEndpointUrl  unless options[:endpoint_url].present?
     raise InvalidHttpMethod  unless [:get, :post].include?(method)
 
