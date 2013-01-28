@@ -58,6 +58,14 @@ describe "RaaS" do
         RaaS.execute(:get, options)
         request.should have_been_requested
       end
+
+      it "sends along headers if specified" do
+        options[:headers] = {'User-Agent' => 'doubleo7'}
+        request = stub_request!.with(:headers => {'User-Agent' => "doubleo7"})
+
+        RaaS.execute(:get, options)
+        request.should have_been_requested
+      end
     end
   end
 end
