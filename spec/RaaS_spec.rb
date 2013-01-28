@@ -46,7 +46,7 @@ describe "RaaS" do
       def stub_request!(options = {})
         url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
         url += "&force=#{options[:force]}"  if options[:force]
-        stub_request(:post, url)
+        stub_request(:post, url).to_return(body: '{}')
       end
 
       it "does not raise an error" do
@@ -75,6 +75,21 @@ describe "RaaS" do
         RaaS.execute(:get, options)
         request.should have_been_requested
       end
+    end
+  end
+
+  context "if the response from RaaS is 200" do
+    it "returns response JSON" do
+      url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
+      example_response = JSON.parse(File.read('./spec/fixtures/response.json'))
+      stub_request(:post, url).to_return(
+        :headers => {'Content-Type' => 'application/json'},
+        :body => example_response,
+        :status => 200,
+      )
+
+      response = RaaS.execute(:get, options)
+      response['response']['body'].should == example_response['response']['body']
     end
   end
 end

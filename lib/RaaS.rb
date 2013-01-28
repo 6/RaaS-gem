@@ -26,7 +26,9 @@ module RaaS
     options.delete(:endpoint_url)
     options.delete(:force)
 
-    RestClient::Request.execute(options)
+    RestClient::Request.execute(options) do |response, request, result, &block|
+      response
+    end
   end
 end
 
