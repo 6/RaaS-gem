@@ -24,9 +24,9 @@ module RaaS
     options[:url] = "#{options[:endpoint_url]}/#{method.to_s}?url=#{CGI.escape(options[:url])}"
     [:force, :timeout].each do |param|
       options[:url] += "&#{param.to_s}=#{options[param]}"  if options[param]
+      options.delete(param)
     end
     options.delete(:endpoint_url)
-    options.delete(:force)
 
     RestClient::Request.execute(options) do |response, request, result, &block|
       raise BadRequest.new(JSON.parse(response.body)['error'])  if response.code == 400
