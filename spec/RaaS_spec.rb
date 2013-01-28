@@ -94,13 +94,25 @@ describe "RaaS" do
   end
 
   context "if the response from RaaS is 400" do
-    it "raises a RaaS::BadResponse with details" do
+    before(:each) do
       url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
       stub_request(:post, url).to_return(
-        :status => 400
+        :status => 400,
+        :headers => {'Content-Type' => 'application/json'},
+        :body => '{"error":"SocketError"}',
       )
+    end
 
+    it "raises a RaaS::BadResponse" do
       expect { RaaS.execute(:get, options) }.to raise_error(RaaS::BadResponse)
+    end
+
+    it "includes details in the exception" do
+      begin
+        RaaS.execute(:get, options)
+      rescue => e
+        e.message.should == "SocketError"
+      end
     end
   end
 
