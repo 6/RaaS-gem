@@ -22,7 +22,9 @@ module RaaS
 
     options[:method] = :post
     options[:url] = "#{options[:endpoint_url]}/#{method.to_s}?url=#{CGI.escape(options[:url])}"
-    options[:url] += "&force=#{options[:force]}"  if options[:force]
+    [:force, :timeout].each do |param|
+      options[:url] += "&#{param.to_s}=#{options[param]}"  if options[param]
+    end
     options.delete(:endpoint_url)
     options.delete(:force)
 
