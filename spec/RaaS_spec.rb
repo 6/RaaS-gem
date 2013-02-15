@@ -137,13 +137,23 @@ describe "RaaS" do
   end
 
   context "if the response from RaaS is an non-200, 400,or 5XX status code" do
-    it "raises a RaaS::UnexpectedStatusCode" do
+    before(:each) do
       url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
       stub_request(:post, url).to_return(
         :status => 402
       )
+    end
 
+    it "raises a RaaS::UnexpectedStatusCode" do
       expect { RaaS.execute(:get, options) }.to raise_error(RaaS::UnexpectedStatusCode)
+    end
+
+    it "includes details in the exception message" do
+      begin
+        RaaS.execute(:get, options)
+      rescue => e
+        e.message.should == "402"
+      end
     end
   end
 end
