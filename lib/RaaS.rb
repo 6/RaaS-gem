@@ -29,9 +29,9 @@ module RaaS
     options.delete(:endpoint_url)
 
     RestClient::Request.execute(options) do |response, request, result, &block|
-      raise BadRequest.new(JSON.parse(response.body)['error'])  if response.code == 400
+      raise BadRequest, JSON.parse(response.body)['error']  if response.code == 400
       raise InternalServerError  if response.code >= 500
-      raise UnexpectedStatusCode.new(response.code.to_s)  if response.code != 200
+      raise UnexpectedStatusCode, response.code.to_s  if response.code != 200
       JSON.parse(response.body)
     end
   end
@@ -39,9 +39,6 @@ end
 
 module RaaS
   class RaaSError < StandardError
-    def initialize(*args)
-      super
-    end
   end
 
   class InvalidUrl < RaaSError
@@ -54,17 +51,11 @@ module RaaS
   end
 
   class BadRequest < RaaSError
-    def initialize(*args)
-      super
-    end
   end
 
   class InternalServerError < RaaSError
   end
 
   class UnexpectedStatusCode < RaaSError
-    def initialize(*args)
-      super
-    end
   end
 end
