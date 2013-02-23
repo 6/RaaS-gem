@@ -44,10 +44,11 @@ describe "RaaS" do
 
     context "with valid options" do
       def stub_request!(options = {})
-        url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
-        url += "&force=#{options[:force]}"  if options[:force]
-        url += "&timeout=#{options[:timeout]}"  if options[:timeout]
-        stub_request(:post, url).to_return(body: '{}')
+        url = "http://localhost:5002/get"
+        payload = {url: "http://www.google.co.jp/search?q=what"}
+        payload['force'] = options[:force]  if options[:force]
+        payload['timeout'] = options[:timeout]  if options[:timeout]
+        stub_request(:post, url).with(body: payload).to_return(body: '{}')
       end
 
       it "does not raise an error" do
@@ -74,7 +75,7 @@ describe "RaaS" do
       end
 
       it "sends the timeout param if specified" do
-        request = stub_request!(timeout: 15)
+        request = stub_request!(timeout: "15")
         RaaS.execute(:get, options.merge(timeout: 15))
         request.should have_been_requested
       end
@@ -83,7 +84,7 @@ describe "RaaS" do
 
   context "if the response from RaaS is 200" do
     it "returns response JSON" do
-      url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
+      url = "http://localhost:5002/get"
       example_response = File.read('./spec/fixtures/response.json')
       stub_request(:post, url).to_return(
         :headers => {'Content-Type' => 'application/json'},
@@ -98,7 +99,7 @@ describe "RaaS" do
 
   context "if the response from RaaS is 400" do
     before(:each) do
-      url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
+      url = "http://localhost:5002/get"
       stub_request(:post, url).to_return(
         :status => 400,
         :headers => {'Content-Type' => 'application/json'},
@@ -121,7 +122,7 @@ describe "RaaS" do
 
   context "if the response from RaaS is 5XX" do
     it "raises a RaaS::InternalServerError" do
-      url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
+      url = "http://localhost:5002/get"
       stub_request(:post, url).to_return(
         :status => 500
       )
@@ -132,7 +133,7 @@ describe "RaaS" do
 
   context "if the response from RaaS is an non-200, 400,or 5XX status code" do
     before(:each) do
-      url = "http://localhost:5002/get?url=http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fq%3Dwhat"
+      url = "http://localhost:5002/get"
       stub_request(:post, url).to_return(
         :status => 402
       )

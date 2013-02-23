@@ -1,6 +1,5 @@
 require "active_support/all"
 require "andand"
-require "cgi"
 require "rest-client"
 
 module RaaS
@@ -17,15 +16,17 @@ module RaaS
   def execute(method, options = {})
     validate_params!(method, options)
 
-    options[:method] = :post
-    options[:url] = "#{options[:endpoint_url]}/#{method.to_s}?url=#{CGI.escape(options[:url])}"
-    [:force, :timeout].each do |param|
-      options[:url] += "&#{param.to_s}=#{options[param]}"  if options[param]
-      options.delete(param)
+    request_options = {
+      method: :post,
+      headers: options[:headers] || {},
+      url: "#{options[:endpoint_url]}/#{method.to_s}",
+      payload: {},
+    }
+    [:url, :force, :timeout].each do |param|
+      request_options[:payload][param] = options[param]  if options[param]
     end
-    options.delete(:endpoint_url)
 
-    RestClient::Request.execute(options) do |response, request, result, &block|
+    RestClient::Request.execute(request_options) do |response, request, result, &block|
       validate_response!(response)
       JSON.parse(response.body)
     end
