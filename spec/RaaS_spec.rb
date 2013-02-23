@@ -103,20 +103,12 @@ describe "RaaS" do
       stub_request(:post, url).to_return(
         :status => 400,
         :headers => {'Content-Type' => 'application/json'},
-        :body => '{"error":"SocketError"}',
+        :body => '{"error": {"name": "SocketError", "message": "Some details"}}',
       )
     end
 
-    it "raises a RaaS::BadResponse" do
-      expect { RaaS.execute(:get, options) }.to raise_error(RaaS::BadRequest)
-    end
-
-    it "includes details in the exception" do
-      begin
-        RaaS.execute(:get, options)
-      rescue => e
-        e.message.should == "SocketError"
-      end
+    it "raises a RaaS::BadResponse with details in the exception message" do
+      expect { RaaS.execute(:get, options) }.to raise_error(RaaS::BadRequest, "SocketError: Some details")
     end
   end
 

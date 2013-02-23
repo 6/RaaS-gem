@@ -40,7 +40,10 @@ module RaaS
   end
 
   def validate_response!(response)
-    raise BadRequest, JSON.parse(response.body)['error']  if response.code == 400
+    if response.code == 400
+      error = JSON.parse(response.body)['error']
+      raise BadRequest, "#{error['name']}: #{error['message']}"
+    end
     raise InternalServerError  if response.code >= 500
     raise UnexpectedStatusCode, response.code.to_s  if response.code != 200
   end
