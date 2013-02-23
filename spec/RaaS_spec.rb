@@ -4,7 +4,7 @@ describe "RaaS" do
   let(:options) do
     {
       url: "http://www.google.co.jp/search?q=what",
-      endpoint_url: "http://localhost:5002"
+      endpoint_url: "http://localhost:5002",
     }
   end
 
@@ -62,26 +62,20 @@ describe "RaaS" do
       end
 
       it "sends along headers if specified" do
-        options[:headers] = {'User-Agent' => 'doubleo7'}
         request = stub_request!.with(:headers => {'User-Agent' => "doubleo7"})
-
-        RaaS.execute(:get, options)
+        RaaS.execute(:get, options.merge(headers: {'User-Agent' => 'doubleo7'}))
         request.should have_been_requested
       end
 
       it "sends along the force param if specified" do
-        options[:force] = "Shift_JIS"
         request = stub_request!(force: "Shift_JIS")
-
-        RaaS.execute(:get, options)
+        RaaS.execute(:get, options.merge(force: "Shift_JIS"))
         request.should have_been_requested
       end
 
       it "sends the timeout param if specified" do
-        options[:timeout] = 15
         request = stub_request!(timeout: 15)
-
-        RaaS.execute(:get, options)
+        RaaS.execute(:get, options.merge(timeout: 15))
         request.should have_been_requested
       end
     end
