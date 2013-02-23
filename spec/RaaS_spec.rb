@@ -138,16 +138,8 @@ describe "RaaS" do
       )
     end
 
-    it "raises a RaaS::UnexpectedStatusCode" do
-      expect { RaaS.execute(:get, options) }.to raise_error(RaaS::UnexpectedStatusCode)
-    end
-
-    it "includes details in the exception message" do
-      begin
-        RaaS.execute(:get, options)
-      rescue => e
-        e.message.should == "402"
-      end
+    it "raises a RaaS::UnexpectedStatusCode with details in the exception message" do
+      expect { RaaS.execute(:get, options) }.to raise_error(RaaS::UnexpectedStatusCode, "402")
     end
   end
 end
