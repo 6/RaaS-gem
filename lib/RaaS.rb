@@ -7,11 +7,11 @@ module RaaS
   module_function
 
   def get(options = {})
-    self.execute(:get, options)
+    execute(:get, options)
   end
 
   def post(options = {})
-    self.execute(:post, options)
+    execute(:post, options)
   end
 
   def execute(method, options = {})
